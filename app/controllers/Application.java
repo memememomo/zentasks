@@ -16,15 +16,15 @@ public class Application extends Controller {
     @Security.Authenticated(Secured.class)
     public static Result index() {
         return ok(index.render(
-                Project.findInvolving(request().username()),
-                Task.findTodoInvolving(request().username()),
-                User.find.byId(request().username())
+            Project.findInvolving(request().username()),
+            Task.findTodoInvolving(request().username()),
+            User.find.byId(request().username())
         ));
     }
 
     public static Result login() {
         return ok(
-                login.render(form(Login.class))
+            login.render(form(Login.class))
         );
     }
 
@@ -36,7 +36,7 @@ public class Application extends Controller {
             session().clear();
             session("email", loginForm.get().email);
             return redirect(
-                    routes.Application.index()
+                routes.Application.index()
             );
 
         }
@@ -58,7 +58,19 @@ public class Application extends Controller {
         session().clear();
         flash("success", "You've been logged out");
         return redirect(
-                routes.Application.login()
+            routes.Application.login()
+        );
+    }
+
+    public static Result javascriptRoutes() {
+        response().setContentType("text/javascript");
+        return ok(
+            Routes.javascriptRouter("jsRoutes",
+                routes.javascript.Projects.add(),
+                routes.javascript.Projects.delete(),
+                routes.javascript.Projects.rename(),
+                routes.javascript.Projects.addGroup()
+            )
         );
     }
 }
